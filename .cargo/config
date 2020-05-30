@@ -1,0 +1,9 @@
+[target.thumbv6m-none-eabi]
+runner = 'arm-none-eabi-gdb'
+rustflags = [
+  # LLD (shipped with the Rust toolchain) is used as the default linker
+  "-C", "link-arg=-Tlink.x",
+]
+
+[build]
+target = "thumbv6m-none-eabi" # Cortex-M0 and Cortex-M0+

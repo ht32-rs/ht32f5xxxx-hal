@@ -29,7 +29,9 @@ pub struct Ckcu {
     pub configuration: Configuration,
 }
 
+/// High Speed Internal Oscillator at 8 Mhz
 const HSI: u32 = 8_000_000;
+/// Low Speed Internal Oscillator at 32 Khz
 const LSI: u32 = 32_000;
 
 /// All clocks that can be outputted via CKOUT.

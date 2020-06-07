@@ -7,6 +7,6 @@ pub use embedded_hal::prelude::*;
 
 pub use crate::ckcu::CkcuExt as _ht32f5xxxx_ckcu_CkcuExt;
 pub use crate::ckcu::CkoutSrc;
-pub use crate::time::U32Ext as _ht32f5xxxx_hal_time_U32Ext;
-pub use crate::gpio::GpioExt as _ht32f5xxxx_gpio_GpioExt;
 pub use crate::gpio::GpioCurrent;
+pub use crate::gpio::GpioExt as _ht32f5xxxx_gpio_GpioExt;
+pub use crate::time::U32Ext as _ht32f5xxxx_hal_time_U32Ext;

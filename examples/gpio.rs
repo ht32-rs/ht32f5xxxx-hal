@@ -23,5 +23,4 @@ fn main() -> ! {
         // If you short PA0 to PA1 you should see true here
         rprintln!("input0, reading: {}", input0.is_high().unwrap());
     }
-
 }

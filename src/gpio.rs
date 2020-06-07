@@ -177,7 +177,7 @@ macro_rules! gpio {
             }
 
             // All PXx in any `Output` mode can do this
-			impl<MODE> StatefulOutputPin for $PXx<Output<MODE>> {
+	    impl<MODE> StatefulOutputPin for $PXx<Output<MODE>> {
                 fn is_set_high(&self) -> Result<bool, Self::Error> {
                     self.is_set_low().map(|v| !v)
                 }
@@ -574,4 +574,3 @@ gpio!(GPIOD, gpiod, PD, pdrst, pden, gpiod_doutr, gpiod_dinr, gpiod_drvr, gpiod_
     PD2: (pd2, 2, Input<Disabled>, AF0, dout2, din2, dv2, dir2, pu2, pd2, inen2, od2, cfg2, afio_gpdcfglr),
     PD3: (pd3, 3, Input<Disabled>, AF0, dout3, din3, dv3, dir3, pu3, pd3, inen3, od3, cfg3, afio_gpdcfglr),
 ]);
-

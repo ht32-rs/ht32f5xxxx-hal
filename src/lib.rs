@@ -30,3 +30,6 @@ pub mod time;
 
 #[cfg(feature = "device-selected")]
 pub mod ckcu;
+
+#[cfg(feature = "device-selected")]
+pub mod gpio;

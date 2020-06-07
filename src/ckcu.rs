@@ -1,15 +1,17 @@
-/// Clock Control Unit
-use crate::ht32::{CKCU, FMC};
+//! Clock Control Unit
+use crate::ht32::{CKCU, FMC, RSTCU};
 use crate::time::{Hertz, U32Ext};
 
 /// Extension trait that constrains the `Ckcu` peripheral
 pub trait CkcuExt {
     /// Constrains the `Ckcu` peripheral so it plays nicely with the other abstractions
-    fn constrain(self) -> Ckcu;
+    fn constrain(self, rstcu: RSTCU) -> Ckcu;
 }
 
 impl CkcuExt for CKCU {
-    fn constrain(self) -> Ckcu {
+    // Also take RSTCU here so it is impossible to safely generate resets for
+    // peripherals
+    fn constrain(self, _rstcu: RSTCU) -> Ckcu {
         Ckcu {
             configuration: Configuration {
                 ckout: None,
@@ -381,6 +383,13 @@ impl Configuration {
 
             ckcu.ckcu_gcfgr.modify(|_, w| unsafe { w.ckoutsrc().bits(ckout) });
         }
+
+        // Reset AFIO here because the GPIO implementation is block wise ->
+        // Resetting AFIO during GPIO initialization could lead to already being
+        // used pins / their AF being reset.
+        (unsafe { &*RSTCU::ptr() })
+            .rstcu_apbprstr0
+            .modify(|_, w| w.afiorst().set_bit());
 
         Clocks {
             ckout: self.ckout,

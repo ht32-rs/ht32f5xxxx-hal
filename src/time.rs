@@ -1,3 +1,4 @@
+//! Basic time abstractions
 /// Bits per second
 #[derive(Debug, PartialEq, PartialOrd, Clone, Copy)]
 pub struct Bps(pub u32);

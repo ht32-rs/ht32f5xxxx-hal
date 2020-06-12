@@ -33,3 +33,6 @@ pub mod ckcu;
 
 #[cfg(feature = "device-selected")]
 pub mod gpio;
+
+#[cfg(feature = "device-selected")]
+pub mod i2c;

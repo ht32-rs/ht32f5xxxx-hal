@@ -87,17 +87,17 @@ pub struct Configuration {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Clocks {
     /// Which clock should be outputted via CKOUT, if any
-    ckout: Option<CkoutSrc>,
+    pub ckout: Option<CkoutSrc>,
     /// The frequency for CK_USB, aka the USB clock
-    ck_usb: Hertz,
+    pub ck_usb: Hertz,
     /// The frequency for CK_ADC_IP, aka the ADC clock
-    ck_adc_ip: Hertz,
+    pub ck_adc_ip: Hertz,
     /// The frequency for CK_SYS
-    ck_sys: Hertz,
+    pub ck_sys: Hertz,
     /// The frequency for STCLK, aka the SysTick clock
-    stclk: Hertz,
+    pub stclk: Hertz,
     /// The frequency for HCLK, aka the AHB bus
-    hclk: Hertz,
+    pub hclk: Hertz,
 }
 
 impl Configuration {

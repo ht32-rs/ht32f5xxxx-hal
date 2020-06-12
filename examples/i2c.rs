@@ -19,5 +19,10 @@ fn main() -> ! {
     let sda = gpioa.pa5.into_output_open_drain().into_alternate_af7();
 
     let mut i2c = dp.I2C0.i2c(scl, sda, 100.khz(), clocks);
-    loop {}
+    let mut buf = [0x60];
+    loop {
+        buf[0] = 0x11;
+        i2c.write_read(0x76, &buf.clone(), &mut buf).unwrap();
+        rprintln!("{:?}", buf);
+    }
 }

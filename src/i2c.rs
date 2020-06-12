@@ -15,7 +15,9 @@ use crate::gpio::{
 
 #[derive(Debug)]
 pub enum Error {
-
+    Arbitration,
+    Bus,
+    NotAcknowledge,
 }
 
 pub trait PinScl<I2C> {}
@@ -47,6 +49,30 @@ pub trait I2cExt<I2C>: Sized {
     ) -> I2c<I2C>
     where
         F: Into<Hertz>;
+}
+
+macro_rules! busy_wait {
+    ($i2c:expr, $field:ident, $variant:ident) => {
+        loop {
+            let status = $i2c.i2c_sr.read();
+
+            if status.$field().$variant() {
+                break;
+            }
+            else if status.arblos().bit_is_set() {
+                return Err(Error::Arbitration)
+            }
+            else if status.rxnack().bit_is_set() {
+                return Err(Error::NotAcknowledge)
+            }
+            else if status.buserr().bit_is_set() {
+                return Err(Error::Bus)
+            }
+            else {
+                // no error
+            }
+        }
+    }
 }
 
 macro_rules! i2c {
@@ -153,19 +179,52 @@ macro_rules! i2c {
                             .clear_bit()
                             // Set slave address
                             .tar()
-                            .bits((addr as u16) << 1)
+                            .bits((addr << 1) as u16)
                     });
 
                     // wait for the start to be sent
-                    while self.i2c.i2c_sr.read().sta().bit_is_clear() {}
+                    busy_wait!(self.i2c, sta, bit_is_set);
                     // wait for the address frame to be sent and ACKed
-                    while self.i2c.i2c_sr.read().adrs().bit_is_clear() {}
+                    busy_wait!(self.i2c, adrs, bit_is_set);
 
                     for byte in bytes {
+                        // wait for the byte to be sent and acked
+                        busy_wait!(self.i2c, txde, bit_is_clear);
                         // send the byte
                         self.i2c.i2c_dr.write(|w| unsafe { w.data().bits(*byte) });
-                        // wait for the byte to be sent and acked
-                        while self.i2c.i2c_sr.read().txde().bit_is_clear() {}
+                    }
+
+                    // send the STOP
+                    self.i2c.i2c_cr.modify(|_, w| w.stop().set_bit());
+
+                    Ok(())
+                }
+            }
+
+            impl Read for I2c<$I2CX> {
+                type Error = Error;
+                fn read(&mut self, addr: u8, buffer: &mut [u8],) -> Result<(), Error> {
+                    // Refer to User Manual page 455 for details regarding this
+                    // function
+                    self.i2c.i2c_tar.modify(|_, w| unsafe {
+                        w.rwd()
+                            // Direction, read from slave
+                            .set_bit()
+                            // Set slave address with read bit
+                            .tar()
+                            .bits(((addr << 1) | 1) as u16)
+                    });
+
+                    // wait for the start to be sent
+                    busy_wait!(self.i2c, sta, bit_is_set);
+                    // wait for the address frame to be sent and ACKed
+                    busy_wait!(self.i2c, adrs, bit_is_set);
+
+                    for byte in buffer {
+                        // wait until we received data
+                        busy_wait!(self.i2c, rxdne, bit_is_set);
+
+                        *byte = self.i2c.i2c_dr.read().data().bits();
                     }
 
                     // send the STOP
@@ -182,16 +241,61 @@ macro_rules! i2c {
                     addr: u8,
                     bytes: &[u8],
                     buffer: &mut [u8],
-                ) -> Result<(), Error> { Ok(()) }
-            }
+                ) -> Result<(), Error> {
+                    // Refer to User Manual page 454 for details regarding this
+                    // part of the function
+                    self.i2c.i2c_tar.modify(|_, w| unsafe {
+                        w.rwd()
+                            // Direction, write to slave
+                            .clear_bit()
+                            // Set slave address
+                            .tar()
+                            .bits((addr << 1) as u16)
+                    });
 
-            impl Read for I2c<$I2CX> {
-                type Error = Error;
-                fn read(
-                    &mut self,
-                    addr: u8,
-                    buffer: &mut [u8],
-                ) -> Result<(), Error> { Ok(()) }
+                    // wait for the start to be sent
+                    busy_wait!(self.i2c, sta, bit_is_set);
+                    // wait for the address frame to be sent and ACKed
+                    busy_wait!(self.i2c, adrs, bit_is_set);
+
+                    for byte in bytes {
+                        // wait for the byte to be sent and acked
+                        busy_wait!(self.i2c, txde, bit_is_clear);
+                        // send the byte
+                        self.i2c.i2c_dr.write(|w| unsafe { w.data().bits(*byte) });
+                    }
+
+                    // unlike write we explicitly don't send a stop here as
+                    // this function is only a single I2C transaction
+
+                    // Refer to User Manual page 455 for details regarding this
+                    // part function
+                    self.i2c.i2c_tar.modify(|_, w| unsafe {
+                        w.rwd()
+                            // Direction, read from slave
+                            .set_bit()
+                            // Set slave address with read bit
+                            .tar()
+                            .bits(((addr << 1) | 1) as u16)
+                    });
+
+                    // wait for the start to be sent
+                    busy_wait!(self.i2c, sta, bit_is_set);
+                    // wait for the address frame to be sent and ACKed
+                    busy_wait!(self.i2c, adrs, bit_is_set);
+
+                    for byte in buffer {
+                        // wait until we received data
+                        busy_wait!(self.i2c, rxdne, bit_is_set);
+
+                        *byte = self.i2c.i2c_dr.read().data().bits();
+                    }
+
+                    // send the STOP
+                    self.i2c.i2c_cr.modify(|_, w| w.stop().set_bit());
+
+                    Ok(())
+                }
             }
         )+
     }

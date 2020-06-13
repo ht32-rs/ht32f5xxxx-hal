@@ -35,7 +35,7 @@ pub trait I2cExt<I2C>: Sized {
         scl: SCL,
         sda: SDA,
         freq: F,
-        clocks: Clocks
+        clocks: &Clocks
     ) -> I2c<I2C>
     where
         SCL: PinScl<I2C>,
@@ -45,7 +45,7 @@ pub trait I2cExt<I2C>: Sized {
     fn i2c_unchecked<F>(
         self,
         freq: F,
-        clocks: Clocks
+        clocks: &Clocks
     ) -> I2c<I2C>
     where
         F: Into<Hertz>;
@@ -83,7 +83,7 @@ macro_rules! i2c {
                 pub fn $i2cX<F>(
                     i2c: $I2CX,
                     freq: F,
-                    clocks: Clocks,
+                    clocks: &Clocks,
                 ) -> Self where
                     F: Into<Hertz>
                 {
@@ -146,7 +146,7 @@ macro_rules! i2c {
                     _scl: SCL,
                     _sda: SDA,
                     freq: F,
-                    clocks: Clocks
+                    clocks: &Clocks
                 ) -> I2c<$I2CX>
                 where
                     SCL: PinScl<$I2CX>,
@@ -159,7 +159,7 @@ macro_rules! i2c {
                 fn i2c_unchecked<F>(
                     self,
                     freq: F,
-                    clocks: Clocks
+                    clocks: &Clocks
                 ) -> I2c<$I2CX>
                 where
                     F: Into<Hertz>

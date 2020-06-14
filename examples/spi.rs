@@ -29,7 +29,6 @@ fn main() -> ! {
     let mut received = 0;
     rprintln!("Starting SPI write loop");
     loop {
-        spi.write(&[0x11, 0x22, 0x33]).unwrap();
         block!(spi.send(received)).ok();
         received = block!(spi.read()).unwrap();
         rprintln!("Received: {}", received);

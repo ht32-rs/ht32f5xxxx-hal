@@ -13,10 +13,14 @@ use crate::gpio::{
     gpiod::PD0
 };
 
+#[non_exhaustive]
 #[derive(Debug)]
 pub enum Error {
+    /// Arbitration error
     Arbitration,
+    /// Bus error
     Bus,
+    /// The slave didn't send ACK
     NotAcknowledge,
 }
 

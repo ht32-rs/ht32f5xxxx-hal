@@ -3,9 +3,9 @@
 
 use cortex_m_rt::entry;
 use ht32f5xxxx_hal::{pac, prelude::*, spi};
+use nb::block;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
-use nb::block;
 
 #[entry]
 fn main() -> ! {
@@ -20,12 +20,7 @@ fn main() -> ! {
     let sck = gpioa.pa0.into_output_push_pull().into_alternate_af5();
     let mosi = gpioa.pa1.into_output_push_pull().into_alternate_af5();
 
-    let mut spi: spi::Spi<_, u8> = dp.SPI1.spi(
-        sck, miso, mosi,
-        spi::MODE_0,
-        1.mhz(),
-        &clocks,
-    );
+    let mut spi: spi::Spi<_, u8> = dp.SPI1.spi(sck, miso, mosi, spi::MODE_0, 1.mhz(), &clocks);
 
     rprintln!("Starting SPI write");
     spi.write(&[0x11, 0x22, 0x33]).unwrap();
@@ -40,4 +35,3 @@ fn main() -> ! {
         rprintln!("Received: {}", received);
     }
 }
-

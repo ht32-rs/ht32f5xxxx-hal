@@ -1,19 +1,17 @@
 //! Serial Peripheral Interface (SPI) bus
-use crate::time::Hertz;
-pub use crate::hal::spi::{
-    Mode, Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3,
-};
-use crate::hal;
-use crate::ht32::{SPI0, SPI1, CKCU, RSTCU};
 use crate::ckcu::Clocks;
 use crate::gpio::{
-    Output, Input, AF5, PushPull, Floating,
-    gpioa::{PA0, PA1, PA2, PA4, PA5, PA6, PA9, PA11, PA15},
+    gpioa::{PA0, PA1, PA11, PA15, PA2, PA4, PA5, PA6, PA9},
     gpiob::{PB0, PB1, PB3, PB4, PB5, PB6},
-    gpioc::{PC0, PC2, PC3, PC5, PC8, PC9, PC11, PC12, PC13},
+    gpioc::{PC0, PC11, PC12, PC13, PC2, PC3, PC5, PC8, PC9},
+    Floating, Input, Output, PushPull, AF5,
 };
-use core::marker::PhantomData;
+use crate::hal;
+pub use crate::hal::spi::{Mode, Phase, Polarity, MODE_0, MODE_1, MODE_2, MODE_3};
+use crate::ht32::{CKCU, RSTCU, SPI0, SPI1};
+use crate::time::Hertz;
 use core::convert::TryInto;
+use core::marker::PhantomData;
 use core::ptr;
 
 #[non_exhaustive]
@@ -38,25 +36,20 @@ pub struct Spi<SPI, WORD = u8> {
 pub trait SpiExt<SPI, WORD>: Sized {
     fn spi<SCK, MISO, MOSI, F>(
         self,
-	sck: SCK,
-	miso: MISO,
-	mosi: MOSI,
+        sck: SCK,
+        miso: MISO,
+        mosi: MOSI,
         mode: Mode,
         freq: F,
         clocks: &Clocks,
     ) -> Spi<SPI, WORD>
     where
-	SCK: PinSck<SPI>,
-	MISO: PinMiso<SPI>,
-	MOSI: PinMosi<SPI>,
+        SCK: PinSck<SPI>,
+        MISO: PinMiso<SPI>,
+        MOSI: PinMosi<SPI>,
         F: Into<Hertz>;
 
-    fn spi_unchecked<F>(
-        self,
-        mode: Mode,
-        freq: F,
-        clocks: &Clocks,
-    ) -> Spi<SPI, WORD>
+    fn spi_unchecked<F>(self, mode: Mode, freq: F, clocks: &Clocks) -> Spi<SPI, WORD>
     where
         F: Into<Hertz>;
 }
@@ -154,12 +147,7 @@ macro_rules! spi {
 	                Spi::<$SPIX, $WORD>::$spiX(self, mode, freq, clocks)
 	            }
 
-	            fn spi_unchecked<F>(
-                        self,
-                        mode: Mode,
-                        freq: F,
-                        clocks: &Clocks,
-                    ) -> Spi<$SPIX, $WORD>
+	            fn spi_unchecked<F>(self, mode: Mode, freq: F, clocks: &Clocks) -> Spi<$SPIX, $WORD>
                     where
                         F: Into<Hertz>
                     {

@@ -25,6 +25,15 @@ them, one must specify the target device as cargo feature:
 $ cargo build --features=ht32f52342_52,rt
 ```
 
+If you want to try one of the provided examples you should install the awesome
+[cargo-embed](https://github.com/probe-rs/cargo-embed) cargo subcommand which
+allows you to both flash and interact with the Holtek MCU via RTT in the
+following manner:
+```
+cargo-embed --features=ht32f52342_52,rt --example=spi --release
+```
+
+## Usage in applications
 To use this crate as a dependency in a standalone project the
 target device feature must be specified in the `Cargo.toml` file:
 ```

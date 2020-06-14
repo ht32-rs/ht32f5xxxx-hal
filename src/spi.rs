@@ -16,11 +16,13 @@ use core::marker::PhantomData;
 use core::convert::TryInto;
 use core::ptr;
 
+#[non_exhaustive]
 #[derive(Debug)]
 pub enum Error {
+    /// Overrun occurred
     Overrun,
+    /// Write Collision occured
     WriteCollision,
-    ModeFault
 }
 
 pub trait PinSck<SPI> {}
@@ -171,10 +173,7 @@ macro_rules! spi {
                     fn read(&mut self) -> nb::Result<$WORD, Error> {
                         let sr = self.spi.spi_sr.read();
 
-                        Err(if sr.mf().bit_is_set() {
-                            nb::Error::Other(Error::ModeFault)
-                        }
-                        else if sr.ro().bit_is_set() {
+                        Err(if sr.ro().bit_is_set() {
                             nb::Error::Other(Error::Overrun)
                         }
                         else if sr.wc().bit_is_set() {
@@ -196,10 +195,7 @@ macro_rules! spi {
                     fn send(&mut self, byte: $WORD) -> nb::Result<(), Error> {
                         let sr = self.spi.spi_sr.read();
 
-                        Err(if sr.mf().bit_is_set() {
-                            nb::Error::Other(Error::ModeFault)
-                        }
-                        else if sr.ro().bit_is_set() {
+                        Err(if sr.ro().bit_is_set() {
                             nb::Error::Other(Error::Overrun)
                         }
                         else if sr.wc().bit_is_set() {

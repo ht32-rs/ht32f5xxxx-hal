@@ -6,7 +6,6 @@ pub use embedded_hal::digital::v2::ToggleableOutputPin as _embedded_hal_digital_
 pub use embedded_hal::prelude::*;
 
 pub use crate::ckcu::CkcuExt as _ht32f5xxxx_ckcu_CkcuExt;
-pub use crate::ckcu::CkoutSrc;
-pub use crate::gpio::GpioCurrent;
 pub use crate::gpio::GpioExt as _ht32f5xxxx_gpio_GpioExt;
+pub use crate::spi::SpiExt as _ht32f5xxxx_hal_spi_SpiExt;
 pub use crate::time::U32Ext as _ht32f5xxxx_hal_time_U32Ext;

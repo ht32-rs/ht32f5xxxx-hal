@@ -9,5 +9,5 @@ pub use crate::ckcu::CkcuExt as _ht32f5xxxx_ckcu_CkcuExt;
 pub use crate::ckcu::CkoutSrc;
 pub use crate::gpio::GpioCurrent;
 pub use crate::gpio::GpioExt as _ht32f5xxxx_gpio_GpioExt;
-pub use crate::time::U32Ext as _ht32f5xxxx_hal_time_U32Ext;
 pub use crate::i2c::I2cExt as _ht32f5xxxx_hal_i2c_I2cExt;
+pub use crate::time::U32Ext as _ht32f5xxxx_hal_time_U32Ext;

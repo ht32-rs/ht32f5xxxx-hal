@@ -1,17 +1,17 @@
 //! Inter Integrated Circuit implementation
 use crate::ckcu::Clocks;
-use crate::time::Hertz;
-use crate::hal::blocking::i2c::{Read, Write, WriteRead};
-use crate::ht32::{I2C0, I2C1, CKCU, RSTCU};
-use core::convert::TryInto;
-use crate::time::U32Ext;
 use crate::gpio::{
-    Output, OpenDrain, AF7,
-    gpioa::{PA0, PA1, PA4, PA5, PA14, PA15},
-    gpiob::{PB0, PB1, PB7, PB8, PB15},
-    gpioc::{PC0, PC4, PC5, PC6, PC7, PC12, PC13, PC14, PC15},
-    gpiod::PD0
+    gpioa::{PA0, PA1, PA14, PA15, PA4, PA5},
+    gpiob::{PB0, PB1, PB15, PB7, PB8},
+    gpioc::{PC0, PC12, PC13, PC14, PC15, PC4, PC5, PC6, PC7},
+    gpiod::PD0,
+    OpenDrain, Output, AF7,
 };
+use crate::hal::blocking::i2c::{Read, Write, WriteRead};
+use crate::ht32::{CKCU, I2C0, I2C1, RSTCU};
+use crate::time::Hertz;
+use crate::time::U32Ext;
+use core::convert::TryInto;
 
 #[non_exhaustive]
 #[derive(Debug)]
@@ -30,27 +30,17 @@ pub trait PinSda<I2C> {}
 
 #[derive(Debug)]
 pub struct I2c<I2C> {
-    i2c: I2C
+    i2c: I2C,
 }
 
 pub trait I2cExt<I2C>: Sized {
-    fn i2c<SCL, SDA, F>(
-        self,
-        scl: SCL,
-        sda: SDA,
-        freq: F,
-        clocks: &Clocks
-    ) -> I2c<I2C>
+    fn i2c<SCL, SDA, F>(self, scl: SCL, sda: SDA, freq: F, clocks: &Clocks) -> I2c<I2C>
     where
         SCL: PinScl<I2C>,
         SDA: PinSda<I2C>,
         F: Into<Hertz>;
 
-    fn i2c_unchecked<F>(
-        self,
-        freq: F,
-        clocks: &Clocks
-    ) -> I2c<I2C>
+    fn i2c_unchecked<F>(self, freq: F, clocks: &Clocks) -> I2c<I2C>
     where
         F: Into<Hertz>;
 }
@@ -62,21 +52,17 @@ macro_rules! busy_wait {
 
             if status.$field().$variant() {
                 break;
-            }
-            else if status.arblos().bit_is_set() {
-                return Err(Error::Arbitration)
-            }
-            else if status.rxnack().bit_is_set() {
-                return Err(Error::NotAcknowledge)
-            }
-            else if status.buserr().bit_is_set() {
-                return Err(Error::Bus)
-            }
-            else {
+            } else if status.arblos().bit_is_set() {
+                return Err(Error::Arbitration);
+            } else if status.rxnack().bit_is_set() {
+                return Err(Error::NotAcknowledge);
+            } else if status.buserr().bit_is_set() {
+                return Err(Error::Bus);
+            } else {
                 // no error
             }
         }
-    }
+    };
 }
 
 macro_rules! i2c {

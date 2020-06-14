@@ -221,7 +221,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0000)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0000)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -231,7 +231,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0001)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0001)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -241,7 +241,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0010)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0010)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -251,7 +251,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0011)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0011)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -261,7 +261,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0100)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0100)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -271,7 +271,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0101)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0101)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -281,7 +281,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0110)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0110)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -291,7 +291,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0111)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b0111)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -301,7 +301,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1000)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1000)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -311,7 +311,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1001)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1001)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -321,7 +321,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1010)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1010)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -331,7 +331,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1011)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1011)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -341,7 +341,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1100)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1100)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -351,7 +351,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1101)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1101)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -361,7 +361,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1110)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1110)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }
@@ -371,7 +371,7 @@ macro_rules! gpio {
                         // Enable the AFIO APB clock
                         (unsafe { &*CKCU::ptr() }).ckcu_apbccr0.modify(|_, w| w.afioen().set_bit());
                         // Set the AF
-                        unsafe { (&*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1111)) };
+                        unsafe { (*AFIO::ptr()).$afio_gpxcfgr.modify(|_, w| w.$cfgx().bits(0b1111)) };
 
                         $PXi { _mode: PhantomData, _af: PhantomData }
                     }

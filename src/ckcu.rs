@@ -170,7 +170,7 @@ impl Configuration {
     /// Freeze the configuration into a Clocks struct and apply it
     pub fn freeze(self) -> Clocks {
         // High speed oscillator
-        let hso = self.hse.unwrap_or(HSI.hz());
+        let hso = self.hse.unwrap_or_else(|| HSI.hz());
         // PLL source clock, see top left corner of the clock tree,
         // User manual page 83
         let pllsrc = self.hse.is_some();
@@ -224,10 +224,10 @@ impl Configuration {
         };
 
         let (mut nf2, mut no2) = (None, None);
-        if pll_target_clock.is_some() {
+        if let Some(pll_target) = pll_target_clock {
             // According to User Manual page 87
             // pll_out = CK_in (NF2/NO2)
-            let optimal_divider = pll_target_clock.unwrap().0 as f32 / hso.0 as f32;
+            let optimal_divider = pll_target.0 as f32 / hso.0 as f32;
             let mut closest = (1, 1);
             let mut difference = f32::MAX;
 

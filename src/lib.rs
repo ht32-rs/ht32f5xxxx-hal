@@ -36,3 +36,6 @@ pub mod gpio;
 
 #[cfg(feature = "device-selected")]
 pub mod spi;
+
+#[cfg(feature = "device-selected")]
+pub mod i2c;

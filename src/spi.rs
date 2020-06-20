@@ -72,7 +72,7 @@ macro_rules! spi {
                         let ckcu = unsafe { &*CKCU::ptr() };
                         // reset the SPI port before using it
                         rstcu.rstcu_apbprstr0.modify(|_, w| w.$spiXrst().set_bit());
-                        // enable the AHB clock for the SPI port
+                        // enable the APB clock for the SPI port
                         ckcu.ckcu_apbccr0.modify(|_, w| w.$spiXen().set_bit());
 
                         // The values for the format register can be found at
@@ -109,10 +109,9 @@ macro_rules! spi {
                         // -> CP = (f_pclk / (2 * f_sck)) - 1
                         // for pclk = hclk
                         let freq = freq.into();
-                        let spi_div = (clocks.hclk.0 / (2 * freq.0)) - 1;
-                        assert!(spi_div <= 65535);
+                        let spi_div: u16 = ((clocks.hclk.0 / (2 * freq.0)) - 1) as u16;
 
-                        spi.spi_cpr.write(|w| unsafe { w.cp().bits(spi_div as u16) });
+                        spi.spi_cpr.write(|w| unsafe { w.cp().bits(spi_div) });
 
                         // Select pin output enable
                         // This causes the chip to not mode fault all the time

@@ -39,3 +39,6 @@ pub mod spi;
 
 #[cfg(feature = "device-selected")]
 pub mod i2c;
+
+#[cfg(feature = "device-selected")]
+pub mod serial;

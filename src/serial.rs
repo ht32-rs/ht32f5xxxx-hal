@@ -23,6 +23,16 @@ pub enum Error {
     Overrun,
 }
 
+#[derive(Debug)]
+pub enum Event {
+    FramingError,
+    ParityError,
+    OverrunError,
+    TransmitComplete,
+    TransmitRegisterEmpty,
+    ReceiveDataReady,
+}
+
 pub trait PinTx<SERIAL> {}
 pub trait PinRx<SERIAL> {}
 
@@ -162,7 +172,7 @@ pub trait SerialExt<SERIAL, WORD> {
 }
 
 macro_rules! serial {
-    ($($SERIALX:ident: ($serialX:ident, $serialXen:ident, $serialXrst:ident, $serial_cr:ident, $serial_dlr:ident, $serial_sifr:ident, $serial_dr:ident) => ($($WORD:ident),+),)+) => {
+    ($($SERIALX:ident: ($serialX:ident, $serialXen:ident, $serialXrst:ident, $serial_cr:ident, $serial_dlr:ident, $serial_sifr:ident, $serial_dr:ident, $serial_ier:ident) => ($($WORD:ident),+),)+) => {
         $(
             $(
                 impl Serial<$SERIALX, $WORD> {
@@ -270,6 +280,30 @@ macro_rules! serial {
                         while self.serial.$serial_sifr.read().txde().bit_is_clear() {}
 
                         self.serial
+                    }
+
+                    /// Starts listening for an interrupt event
+                    pub fn listen(&mut self, event: Event) {
+                        match event {
+                            Event::FramingError => self.serial.$serial_ier.modify(|_, w| w.feie().set_bit()),
+                            Event::ParityError => self.serial.$serial_ier.modify(|_, w| w.peie().set_bit()),
+                            Event::OverrunError => self.serial.$serial_ier.modify(|_, w| w.oeie().set_bit()),
+                            Event::TransmitComplete => self.serial.$serial_ier.modify(|_, w| w.txcie().set_bit()),
+                            Event::TransmitRegisterEmpty => self.serial.$serial_ier.modify(|_, w| w.txdeie().set_bit()),
+                            Event::ReceiveDataReady => self.serial.$serial_ier.modify(|_, w| w.rxdrie().set_bit()),
+                        }
+                    }
+
+                    /// Starts listening for an interrupt event
+                    pub fn unlisten(&mut self, event: Event) {
+                        match event {
+                            Event::FramingError => self.serial.$serial_ier.modify(|_, w| w.feie().clear_bit()),
+                            Event::ParityError => self.serial.$serial_ier.modify(|_, w| w.peie().clear_bit()),
+                            Event::OverrunError => self.serial.$serial_ier.modify(|_, w| w.oeie().clear_bit()),
+                            Event::TransmitComplete => self.serial.$serial_ier.modify(|_, w| w.txcie().clear_bit()),
+                            Event::TransmitRegisterEmpty => self.serial.$serial_ier.modify(|_, w| w.txdeie().clear_bit()),
+                            Event::ReceiveDataReady => self.serial.$serial_ier.modify(|_, w| w.rxdrie().clear_bit()),
+                        }
                     }
                 }
 
@@ -461,10 +495,10 @@ serial_pins! {
 }
 
 serial! {
-    UART0: (uart0, ur0en, ur0rst, uart_urcr, uart_urdlr, uart_ursifr, uart_urdr) => (u8, u16),
-    UART1: (uart1, ur1en, ur0rst, uart_urcr, uart_urdlr, uart_ursifr, uart_urdr) => (u8, u16),
-    USART0: (usart0, usr0en, usr0rst, usart_usrcr, usart_usrdlr, usart_usrsifr, usart_usrdr) => (u8, u16),
-    USART1: (usart1, usr1en, usr1rst, usart_usrcr, usart_usrdlr, usart_usrsifr, usart_usrdr) => (u8, u16),
+    UART0: (uart0, ur0en, ur0rst, uart_urcr, uart_urdlr, uart_ursifr, uart_urdr, uart_urier) => (u8, u16),
+    UART1: (uart1, ur1en, ur0rst, uart_urcr, uart_urdlr, uart_ursifr, uart_urdr, uart_urier) => (u8, u16),
+    USART0: (usart0, usr0en, usr0rst, usart_usrcr, usart_usrdlr, usart_usrsifr, usart_usrdr, usart_usrier) => (u8, u16),
+    USART1: (usart1, usr1en, usr1rst, usart_usrcr, usart_usrdlr, usart_usrsifr, usart_usrdr, usart_usrier) => (u8, u16),
 }
 
 impl<SERIAL> core::fmt::Write for Tx<SERIAL, u8>

@@ -23,6 +23,16 @@ pub enum Error {
     WriteCollision,
 }
 
+#[derive(Debug)]
+pub enum Event {
+    ModeFault,
+    ReadOverrun,
+    WriteCollision,
+    RxBufferNotEmpty,
+    TxEmpty,
+    TxBufferEmpty,
+}
+
 pub trait PinSck<SPI> {}
 pub trait PinMiso<SPI> {}
 pub trait PinMosi<SPI> {}
@@ -124,6 +134,27 @@ macro_rules! spi {
 
                     pub fn free(self) -> $SPIX {
                         self.spi
+                    }
+
+                    pub fn listen(&mut self, event: Event) {
+                        match event {
+                            Event::ModeFault => self.spi.spi_ier.modify(|_, w| w.mfien().set_bit()),
+                            Event::ReadOverrun => self.spi.spi_ier.modify(|_, w| w.roien().set_bit()),
+                            Event::WriteCollision => self.spi.spi_ier.modify(|_, w| w.wcien().set_bit()),
+                            Event::RxBufferNotEmpty => self.spi.spi_ier.modify(|_, w| w.rxbneien().set_bit()),
+                            Event::TxEmpty => self.spi.spi_ier.modify(|_, w| w.txeien().set_bit()),
+                            Event::TxBufferEmpty => self.spi.spi_ier.modify(|_, w| w.txbeien().set_bit())
+                        }
+                    }
+                    pub fn unlisten(&mut self, event: Event) {
+                        match event {
+                            Event::ModeFault => self.spi.spi_ier.modify(|_, w| w.mfien().clear_bit()),
+                            Event::ReadOverrun => self.spi.spi_ier.modify(|_, w| w.roien().clear_bit()),
+                            Event::WriteCollision => self.spi.spi_ier.modify(|_, w| w.wcien().clear_bit()),
+                            Event::RxBufferNotEmpty => self.spi.spi_ier.modify(|_, w| w.rxbneien().clear_bit()),
+                            Event::TxEmpty => self.spi.spi_ier.modify(|_, w| w.txeien().clear_bit()),
+                            Event::TxBufferEmpty => self.spi.spi_ier.modify(|_, w| w.txbeien().clear_bit())
+                        }
                     }
                 }
 

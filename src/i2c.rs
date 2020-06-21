@@ -24,6 +24,18 @@ pub enum Error {
     NotAcknowledge,
 }
 
+#[derive(Debug)]
+pub enum Event {
+    RxBufferFull,
+    DataRegisterEmtpyTransmitter,
+    DataRegisterEmptyReceiver,
+    BusError,
+    ReceivedNotAcknowledge,
+    ArbitrationLoss,
+    StopConditionDetected,
+    StartConditionTransmit
+}
+
 pub trait PinScl<I2C> {}
 
 pub trait PinSda<I2C> {}
@@ -127,6 +139,32 @@ macro_rules! i2c {
 
                 pub fn free(self) -> $I2CX {
                     self.i2c
+                }
+
+                pub fn listen(&mut self, event: Event) {
+                    match event {
+                        Event::RxBufferFull => self.i2c.i2c_ier.modify(|_, w| w.rxbfie().set_bit()),
+                        Event::DataRegisterEmtpyTransmitter => self.i2c.i2c_ier.modify(|_, w| w.txdeie().set_bit()),
+                        Event::DataRegisterEmptyReceiver => self.i2c.i2c_ier.modify(|_, w| w.rxdneie().set_bit()),
+                        Event::BusError => self.i2c.i2c_ier.modify(|_, w| w.buserrie().set_bit()),
+                        Event::ReceivedNotAcknowledge => self.i2c.i2c_ier.modify(|_, w| w.rxnackie().set_bit()),
+                        Event::ArbitrationLoss => self.i2c.i2c_ier.modify(|_, w| w.arblosie().set_bit()),
+                        Event::StopConditionDetected => self.i2c.i2c_ier.modify(|_, w| w.stoie().set_bit()),
+                        Event::StartConditionTransmit => self.i2c.i2c_ier.modify(|_, w| w.staie().set_bit())
+                    }
+                }
+
+                pub fn unlisten(&mut self, event: Event) {
+                    match event {
+                        Event::RxBufferFull => self.i2c.i2c_ier.modify(|_, w| w.rxbfie().clear_bit()),
+                        Event::DataRegisterEmtpyTransmitter => self.i2c.i2c_ier.modify(|_, w| w.txdeie().clear_bit()),
+                        Event::DataRegisterEmptyReceiver => self.i2c.i2c_ier.modify(|_, w| w.rxdneie().clear_bit()),
+                        Event::BusError => self.i2c.i2c_ier.modify(|_, w| w.buserrie().clear_bit()),
+                        Event::ReceivedNotAcknowledge => self.i2c.i2c_ier.modify(|_, w| w.rxnackie().clear_bit()),
+                        Event::ArbitrationLoss => self.i2c.i2c_ier.modify(|_, w| w.arblosie().clear_bit()),
+                        Event::StopConditionDetected => self.i2c.i2c_ier.modify(|_, w| w.stoie().clear_bit()),
+                        Event::StartConditionTransmit => self.i2c.i2c_ier.modify(|_, w| w.staie().clear_bit())
+                    }
                 }
             }
 

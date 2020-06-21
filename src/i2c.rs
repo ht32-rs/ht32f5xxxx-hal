@@ -33,7 +33,7 @@ pub enum Event {
     ReceivedNotAcknowledge,
     ArbitrationLoss,
     StopConditionDetected,
-    StartConditionTransmit
+    StartConditionTransmit,
 }
 
 pub trait PinScl<I2C> {}

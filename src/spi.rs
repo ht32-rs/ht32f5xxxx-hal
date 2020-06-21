@@ -30,7 +30,7 @@ pub enum Event {
     WriteCollision,
     RxBufferNotEmpty,
     TxEmpty,
-    TxBufferEmpty
+    TxBufferEmpty,
 }
 
 pub trait PinSck<SPI> {}

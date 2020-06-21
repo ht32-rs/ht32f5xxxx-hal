@@ -144,7 +144,7 @@ pub mod config {
             let baudrate = 9600u32.bps();
             Config {
                 baudrate,
-                wordlength: WordLength::DataBits7,
+                wordlength: WordLength::DataBits8,
                 parity: Parity::ParityNone,
                 stopbits: StopBits::STOP1,
             }

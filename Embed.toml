@@ -1,11 +1,11 @@
-[probe]
+[default.probe]
 protocol = "Swd"
 
-[general]
+[default.general]
 chip="HT32F52352_48LQFP"
 
-[rtt]
+[default.rtt]
 enabled= true
 
-[gdb]
+[default.gdb]
 enabled = false

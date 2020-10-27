@@ -37,9 +37,9 @@ checksum = "46afbd2983a5d5a7bd740ccb198caf5b82f45c40c09c0eed36052d91cb92e719"
 
 [[package]]
 name = "cortex-m"
-version = "0.6.3"
+version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2be99930c99669a74d986f7fd2162085498b322e6daae8ef63a97cc9ac1dc73c"
+checksum = "88cdafeafba636c00c467ded7f1587210725a1adfab0c24028a7844b87738263"
 dependencies = [
  "aligned",
  "bare-metal",

@@ -49,12 +49,21 @@ dependencies = [
 
 [[package]]
 name = "cortex-m-rt"
-version = "0.6.12"
+version = "0.6.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00d518da72bba39496024b62607c1d8e37bcece44b2536664f1132a73a499a28"
+checksum = "b6d8353767db816419630a76d5f1ad5b09610d22b67ceb59647df6a8abc667f8"
 dependencies = [
- "cortex-m-rt-macros",
+ "cortex-m-rt-macros 0.1.8",
  "r0",
+]
+
+[[package]]
+name = "cortex-m-rt"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "069533b58e25b635fac881eb6556616bd8f83a3e0ffe2b4b9619289ed14d465e"
+dependencies = [
+ "cortex-m-rt-macros 0.7.0",
 ]
 
 [[package]]
@@ -62,6 +71,17 @@ name = "cortex-m-rt-macros"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4717562afbba06e760d34451919f5c3bf3ac15c7bb897e8b04862a7428378647"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "cortex-m-rt-macros"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f0f6f3e36f203cfedbc78b357fb28730aa2c6dc1ab060ee5c2405e843988d3c7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -104,7 +124,7 @@ checksum = "e29878bd53aebe9901eb08c5c694fd1eba96eeb6a0a1a028ad1a5ded5f381ac0"
 dependencies = [
  "bare-metal",
  "cortex-m",
- "cortex-m-rt",
+ "cortex-m-rt 0.6.14",
  "vcell",
 ]
 
@@ -114,7 +134,7 @@ version = "0.1.0"
 dependencies = [
  "bare-metal",
  "cortex-m",
- "cortex-m-rt",
+ "cortex-m-rt 0.7.0",
  "embedded-hal",
  "ht32f5xxxx",
  "nb",
